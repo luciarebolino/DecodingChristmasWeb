@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Image Slideshow</title>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr); /* 6 columns */
+            grid-template-rows: repeat(3, 1fr); /* 3 rows */
+            grid-gap: 10px;
+            padding: 20px;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .window {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+
+        .window img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* This maintains the image's aspect ratio */
+            position: absolute;
+            opacity: 0;
+        
+        }
+
+        .window img.active {
+            opacity: 1;
+        }
+
+        /* Specific placement for the 6x3 grid layout */
+        #window1 { grid-column: 1 / 2; grid-row: 1; }
+        #window2 { grid-column: 2 / 3; grid-row: 1; }
+        #window3 { grid-column: 3 / 4; grid-row: 1; }
+        #window4 { grid-column: 4 / 5; grid-row: 1; }
+        #window5 { grid-column: 5 / 6; grid-row: 1; }
+        /* The last empty space in the first row is implicit due to grid-template-columns */
+
+        #window6 { grid-column: 1 / 2; grid-row: 2; }
+        #window7 { grid-column: 2 / 3; grid-row: 2; }
+        #window8 { grid-column: 3 / 4; grid-row: 2; }
+        #window9 { grid-column: 4 / 5; grid-row: 2; }
+        #window10 { grid-column: 5 / 6; grid-row: 2; }
+        /* The last empty space in the second row is implicit as well */
+
+        #window11 { grid-column: 1 / 2; grid-row: 3; }
+        #window12 { grid-column: 2 / 3; grid-row: 3; }
+        /* Empty space in the middle of the third row */
+        #window13 { grid-column: 5 / 6; grid-row: 3; }
+        #window14 { grid-column: 6 / 7; grid-row: 3; }
+    </style>
+</head>
+<body>
+    <div class="grid-container">
+        <div class="window" id="window1"></div>
+        <div class="window" id="window2"></div>
+        <div class="window" id="window3"></div>
+        <div class="window" id="window4"></div>
+        <div class="window" id="window5"></div>
+        <div class="window" id="window6"></div>
+        <div class="window" id="window7"></div>
+        <div class="window" id="window8"></div>
+        <div class="window" id="window9"></div>
+        <div class="window" id="window10"></div>
+        <div class="window" id="window11"></div>
+        <div class="window" id="window12"></div>
+        <div class="window" id="window13"></div>
+        <div class="window" id="window14"></div>
+    </div>
+
+    <script>
+        // Function to load images based on a consistent naming pattern (image1.jpg, image2.jpg, etc.)
+        function loadImages(windowId, folderPath, numberOfImages) {
+            const windowElement = document.getElementById(windowId);
+
+            // Create a list of image URLs based on the pattern image1.jpg, image2.jpg, etc.
+            const imageUrls = [];
+            for (let i = 1; i <= numberOfImages; i++) {
+                imageUrls.push(`${folderPath}/image${i}.jpg`);
+            }
+
+            let currentImageIndex = 0;
+            let intervalId;
+
+            // Add the images dynamically to the window
+            imageUrls.forEach((url, index) => {
+                const img = document.createElement('img');
+                img.src = url;
+                if (index === 0) img.classList.add('active');
+                windowElement.appendChild(img);
+            });
+
+            const images = windowElement.getElementsByTagName('img');
+
+            // Function to switch images
+            function switchImage() {
+                images[currentImageIndex].classList.remove('active');
+                currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
+                images[currentImageIndex].classList.add('active');
+            }
+
+            // Calculate the time per image so all images are shown within 60 seconds
+            const timePerImage = 6000 / imageUrls.length;
+
+            // Start the interval to automatically cycle through images
+            function startSlideshow() {
+                intervalId = setInterval(switchImage, timePerImage);
+            }
+
+            // Stop the slideshow
+            function stopSlideshow() {
+                clearInterval(intervalId);
+            }
+
+            // Add event listeners to pause on hover and resume when the mouse leaves
+            windowElement.addEventListener('mouseenter', stopSlideshow);
+            windowElement.addEventListener('mouseleave', startSlideshow);
+
+            // Start the slideshow on page load
+            startSlideshow();
+        }
+
+        // Load images for each window with the number of images in each folder
+        loadImages('window1', 'images/tree', 446);
+        loadImages('window2', 'images/ball', 654);
+        loadImages('window3', 'images/candycane', 94);
+        loadImages('window4', 'images/lights', 461);
+        loadImages('window5', 'images/star', 76);
+        loadImages('window6', 'images/gingerbread', 55);
+        loadImages('window7', 'images/wreath', 172);
+        loadImages('window8', 'images/calendar', 78);
+        loadImages('window9', 'images/pack', 160);
+        loadImages('window10', 'images/bells', 125);
+        loadImages('window11', 'images/candle', 177);
+        loadImages('window12', 'images/santa', 250);
+        loadImages('window13', 'images/base-albero', 114);
+        loadImages('window14', 'images/present', 361);
+    </script>
+</body>
+</html>
